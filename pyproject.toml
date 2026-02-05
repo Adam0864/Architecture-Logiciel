@@ -1,0 +1,16 @@
+[project]
+name = "archilog"
+version = "0.1"
+description = "A simple project for educational purpose."
+readme = "README.md"
+dependencies = ["click>=8.3.1"]
+requires-python = ">=3.11"
+
+
+[project.scripts]
+archilog = "archilog:cli"
+
+
+[build-system]
+requires = ["uv_build>=0.9.26,<0.10.0"]
+build-backend = "uv_build"
