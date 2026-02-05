@@ -76,15 +76,7 @@ def calculeDesParts(nomc: str):
     montantTotal=db.execute("select montant from cagnottes where nom=?",(nomc,)).fetchone()
     nbPersonnes=len(db.execute("select * from depenses where nomC=?",(nomc,)).fetchall())
     TTCparpersonne = montantTotal[0] / nbPersonnes
-    gagnant = {}
-    perdant = {}
-    personneList = db.execute("SELECT * from depenses where nomC=?",(nomc,)).fetchall()
-    for personne in personneList:
-        credit = float(personne[2])-TTCparpersonne
-        if credit > 0:
-            gagnant[personne[1]]=credit
-        elif credit < 0:
-            perdant[personne[1]]=credit
+    gagnant,perdant = répartitionDesPersonnes(nomc,TTCparpersonne)
 
     for personneEndettée in perdant.keys():
         for riche in gagnant.keys():
@@ -98,3 +90,15 @@ def calculeDesParts(nomc: str):
                     print(personneEndettée+" doit "+str(gagnant[riche])+" à "+riche)
                     gagnant[riche] = 0
                     perdant[personneEndettée] = calcul
+
+def répartitionDesPersonnes(nomc,TTCparpersonne):
+    gagnant = {}
+    perdant = {}
+    personneList = db.execute("SELECT * from depenses where nomC=?", (nomc,)).fetchall()
+    for personne in personneList:
+        credit = float(personne[2]) - TTCparpersonne
+        if credit > 0:
+            gagnant[personne[1]] = credit
+        elif credit < 0:
+            perdant[personne[1]] = credit
+    return gagnant,perdant
